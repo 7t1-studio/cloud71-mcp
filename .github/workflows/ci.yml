@@ -31,6 +31,11 @@ jobs:
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - name: Deploy to Cloudflare Workers
+        # Skips (job stays green) until a CLOUDFLARE_API_TOKEN repo secret is set,
+        # since the worker can also be deployed manually with `pnpm deploy`.
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
