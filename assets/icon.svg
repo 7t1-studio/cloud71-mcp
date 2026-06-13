@@ -1,0 +1,9 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="cloud71">
+  <rect width="512" height="512" rx="112" fill="#0e130c"/>
+  <!-- cloud -->
+  <path fill="#9fe870" d="M168 296a64 64 0 0 1 7-127 88 88 0 0 1 167 18 56 56 0 0 1-14 110H176a40 40 0 0 1-8-1z"/>
+  <!-- upload arrow cut into the cloud -->
+  <path fill="#0e130c" d="M243 357v-58h-26l39-46 39 46h-26v58z"/>
+  <!-- "71" wordmark -->
+  <text x="256" y="438" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="64" font-weight="700" letter-spacing="2" text-anchor="middle" fill="#9fe870">71</text>
+</svg>
