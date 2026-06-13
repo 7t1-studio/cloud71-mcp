@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cloud71-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  // Served at the connector URL users add in Claude / ChatGPT.
+  "routes": [{ "pattern": "mcp.cloud71.host", "custom_domain": true }],
+  // McpAgent is a Durable Object (one instance per MCP session).
+  "durable_objects": {
+    "bindings": [{ "class_name": "Cloud71MCP", "name": "MCP_OBJECT" }]
+  },
+  "migrations": [{ "new_sqlite_classes": ["Cloud71MCP"], "tag": "v1" }],
+  // OAuth grant/token store for @cloudflare/workers-oauth-provider.
+  "kv_namespaces": [{ "binding": "OAUTH_KV", "id": "fb680f921f07491bb2da99075c4714bf" }],
+  "vars": {
+    // The cloud71 app — the upstream identity provider + hosting API.
+    "CLOUD71_BASE_URL": "https://app.cloud71.host"
+  }
+  // Secrets (wrangler secret put): COOKIE_ENCRYPTION_KEY, CLOUD71_CLIENT_ID,
+  // CLOUD71_CLIENT_SECRET.
+}

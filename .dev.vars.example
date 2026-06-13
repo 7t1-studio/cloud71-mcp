@@ -1,0 +1,11 @@
+# The cloud71 app — upstream identity provider + hosting API.
+# Local dev against a local cloud71: http://localhost:3000
+CLOUD71_BASE_URL="https://app.cloud71.host"
+
+# The OAuth client this connector is registered as on cloud71.
+CLOUD71_CLIENT_ID="cloud71-mcp"
+CLOUD71_CLIENT_SECRET="replace-with-the-registered-client-secret"
+
+# Random 32-byte hex — signs the "approved clients" cookie.
+# Generate with:  openssl rand -hex 32
+COOKIE_ENCRYPTION_KEY="replace-with-openssl-rand-hex-32"
