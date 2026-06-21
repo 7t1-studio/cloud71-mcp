@@ -2,6 +2,8 @@
 // sent upstream to log in. Adapted from the Cloudflare workers-oauth-provider
 // reference (HMAC-SHA256 over the approved client-id list).
 
+import { htmlResponse, page } from "./ui.ts";
+
 const COOKIE_NAME = "__c71_mcp_approved";
 const ONE_YEAR = 60 * 60 * 24 * 365;
 
@@ -98,45 +100,24 @@ export function renderApprovalDialog(_request: Request, opts: ApprovalDialogOpti
   );
   const serverName = escapeHtml(opts.server.name);
   const desc = escapeHtml(opts.server.description ?? "");
-  const html = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Authorize ${serverName}</title>
-<style>
-  :root{color-scheme:light dark}
-  body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:0;min-height:100vh;display:grid;place-items:center;background:#0f172a;color:#e2e8f0}
-  .card{width:min(420px,92vw);background:#111827;border:1px solid #1f2937;border-radius:16px;padding:28px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
-  h1{font-size:1.25rem;margin:0 0 4px}
-  p{color:#94a3b8;font-size:.95rem;line-height:1.5}
-  .who{margin:18px 0;padding:14px;border:1px solid #1f2937;border-radius:10px;background:#0b1220}
-  .who b{color:#e2e8f0}
-  ul{margin:8px 0 0;padding-left:1.1rem;color:#94a3b8;font-size:.9rem}
-  .row{display:flex;gap:10px;margin-top:22px}
-  button{flex:1;height:42px;border-radius:10px;border:0;font:inherit;font-weight:600;cursor:pointer}
-  .approve{background:#34d399;color:#06281c}
-  .cancel{background:#1f2937;color:#e2e8f0}
-  .brand{font-weight:700;color:#34d399}
-</style></head>
-<body><div class="card">
-  <div class="brand">cloud71</div>
-  <h1>Connect to ${serverName}</h1>
-  <p>${desc}</p>
-  <div class="who"><b>${clientName}</b> is requesting access to your cloud71 account. After you approve, you'll sign in to cloud71.
-    <ul>
-      <li>Deploy files to your hosting</li>
-      <li>List and read your sites</li>
-      <li>Manage your sites (rename, custom domain, delete)</li>
-    </ul>
-  </div>
-  <form method="post">
-    <input type="hidden" name="state" value="${encodedState}">
-    <div class="row">
-      <button class="cancel" type="button" onclick="history.back()">Cancel</button>
-      <button class="approve" type="submit">Approve &amp; sign in</button>
-    </div>
-  </form>
-</div></body></html>`;
-  return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
+  const body = `<h1>Connect to ${serverName}</h1>
+${desc ? `<p>${desc}</p>` : ""}
+<div class="scopes"><b>${clientName}</b> is requesting access to your cloud71 account. After you
+approve, you'll sign in to cloud71.
+<ul>
+<li>Deploy files to your hosting</li>
+<li>List and read your sites</li>
+<li>Manage your sites — rename, custom domain, delete</li>
+</ul>
+</div>
+<form method="post">
+<input type="hidden" name="state" value="${encodedState}">
+<div class="row">
+<button class="btn btn-secondary" type="button" onclick="history.back()">Cancel</button>
+<button class="btn btn-primary" type="submit">Approve &amp; sign in</button>
+</div>
+</form>`;
+  return htmlResponse(page({ title: `Authorize ${serverName} · cloud71`, body }));
 }
 
 /** Parse the approval POST, returning the OAuth request + a Set-Cookie that records approval. */

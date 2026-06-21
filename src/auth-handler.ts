@@ -1,6 +1,7 @@
 import type { AuthRequest } from "@cloudflare/workers-oauth-provider";
 import { Hono } from "hono";
 import type { Env } from "./types.ts";
+import { htmlResponse, landingPage, messagePage } from "./ui.ts";
 import { exchangeCode, upstreamAuthorizeUrl } from "./utils.ts";
 import {
   clientIdAlreadyApproved,
@@ -11,6 +12,9 @@ import {
 const app = new Hono<{ Bindings: Env }>();
 
 const SCOPE = "deploy sites:read sites:write";
+
+// Branded landing for the bare endpoint root (otherwise a 404).
+app.get("/", () => htmlResponse(landingPage()));
 
 /** Redirect the user to cloud71 to log in, round-tripping the OAuth request in `state`. */
 function redirectToCloud71(env: Env, requestUrl: string, oauthReqInfo: AuthRequest): Response {
@@ -27,7 +31,12 @@ function redirectToCloud71(env: Env, requestUrl: string, oauthReqInfo: AuthReque
 // Step 1: the MCP client sends the user here to authorize.
 app.get("/authorize", async (c) => {
   const oauthReqInfo = await c.env.OAUTH_PROVIDER.parseAuthRequest(c.req.raw);
-  if (!oauthReqInfo.clientId) return c.text("Invalid authorization request", 400);
+  if (!oauthReqInfo.clientId)
+    return messagePage(
+      "Invalid request",
+      "This authorization request is missing required parameters. Start the connection again from your AI client.",
+      400,
+    );
 
   // Skip the consent screen if this client was already approved on this device.
   if (
@@ -59,15 +68,21 @@ app.post("/authorize", async (c) => {
 app.get("/callback", async (c) => {
   const code = c.req.query("code");
   const stateParam = c.req.query("state");
-  if (!code || !stateParam) return c.text("Missing code or state", 400);
+  if (!code || !stateParam)
+    return messagePage(
+      "Sign-in incomplete",
+      "The login response was missing required values.",
+      400,
+    );
 
   let oauthReqInfo: AuthRequest;
   try {
     oauthReqInfo = JSON.parse(atob(stateParam)) as AuthRequest;
   } catch {
-    return c.text("Invalid state", 400);
+    return messagePage("Sign-in incomplete", "The login response could not be verified.", 400);
   }
-  if (!oauthReqInfo.clientId) return c.text("Invalid state", 400);
+  if (!oauthReqInfo.clientId)
+    return messagePage("Sign-in incomplete", "The login response could not be verified.", 400);
 
   let user: Awaited<ReturnType<typeof exchangeCode>>;
   try {
@@ -79,7 +94,12 @@ app.get("/callback", async (c) => {
       redirectUri: new URL("/callback", c.req.url).href,
     });
   } catch (err) {
-    return c.text(`Sign-in failed: ${err instanceof Error ? err.message : "unknown error"}`, 400);
+    console.error("MCP callback exchange failed:", err);
+    return messagePage(
+      "Sign-in failed",
+      "We couldn't complete sign-in with cloud71. Please try connecting again.",
+      400,
+    );
   }
 
   const subject = user.userId || user.email;
