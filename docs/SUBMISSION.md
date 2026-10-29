@@ -1,26 +1,32 @@
 # Directory submission sheet
 
-Everything needed to submit the cloud71 connector to the **Anthropic (Claude)
-connector directory** and the **OpenAI (ChatGPT) connector directory**. Copy the
-fields below into each submission form.
+Everything needed to submit cloud71 to the **Anthropic (Claude) directory** and the
+**OpenAI (ChatGPT) connector directory**. Copy the fields below into each form.
 
-The server is **live** at `https://mcp.cloud71.host` (Streamable HTTP, OAuth 2.1).
+For Claude there are **two submissions** from the same organization at
+[claude.ai/directory/manage](https://claude.ai/directory/manage) → **Submit new**: the
+server as an **MCP connector**, and the `plugin/` folder of this repo as a **Plugin
+bundle**. Pair them once both are in. The connector is listed as **Community** by
+default after an automatic policy scan; the plugin gets a security scan and a human
+review before its first version goes live.
+
+The server is **live** at `https://mcp.cloud71.host/mcp` (Streamable HTTP, OAuth 2.1).
 
 ## Listing fields
 
 | Field | Value |
 | --- | --- |
 | **Name** | cloud71 |
-| **Tagline** | Deploy AI‑generated files to live hosting in seconds. |
-| **Category** | Developer tools / Productivity / Hosting |
-| **MCP server URL** | `https://mcp.cloud71.host` |
+| **Tagline** | Turn anything your AI makes into a live website. |
+| **Category** | Productivity / Developer tools |
+| **MCP server URL** | `https://mcp.cloud71.host/mcp` (must equal the protected-resource `resource` exactly) |
 | **Auth** | OAuth 2.1 (PKCE S256 + Dynamic Client Registration); login via cloud71 account |
 | **Website** | https://cloud71.host |
-| **Documentation** | https://github.com/7t1-studio/cloud71-mcp |
-| **Privacy policy** | https://github.com/7t1-studio/cloud71-mcp/blob/main/docs/PRIVACY.md |
-| **Terms of service** | https://github.com/7t1-studio/cloud71-mcp/blob/main/docs/TERMS.md |
+| **Documentation** | https://cloud71.host/docs/mcp/ |
+| **Privacy policy** | https://cloud71.host/privacy/ |
+| **Terms of service** | https://cloud71.host/terms/ |
 | **Support contact** | hello@cloud71.host |
-| **Icon** | `assets/icon.svg` (export to 512×512 PNG if the form requires raster) |
+| **Icon** | the 1024×1024 PNG in the plugin's assets folder (the cloud71 brand mark) |
 
 ### Short description (≤ ~100 chars)
 
@@ -33,10 +39,10 @@ The server is **live** at `https://mcp.cloud71.host` (Streamable HTTP, OAuth 2.1
 > and it publishes to a public `https://*.cloud71.site` URL in seconds — with free
 > SSL, analytics, and optional custom domains. You sign in with your own cloud71
 > account over OAuth (no API keys to paste), and every action runs only against
-> your account. List your sites, read a site's files to edit‑then‑redeploy, password‑
-> protect a page or put an email gate in front of it, attach a custom domain, check
-> traffic, roll back to an earlier version, get a QR code, or take a site down — all
-> from the conversation.
+> your account. List your sites, read a site's files to edit‑then‑redeploy, protect a
+> page with a visitor password or add an opt-in email form, attach a custom domain,
+> check traffic, roll back to an earlier version, get a QR code, or take a site down —
+> all from the conversation.
 
 ## Tools (with safety annotations)
 
@@ -72,7 +78,7 @@ pricing link); rollbacks are reversible; deletes are not.
 5. **"Attach the domain www.northwind.coffee to my `northwind` site."**
    → `manage_domain` with `action: "add"` (returns the CNAME + TXT records to add);
    later `action: "status"` reports when SSL is live.
-6. **"Password‑protect my `northwind` site with 'beans2026' and make it expire in a week."**
+6. **"Put a visitor password on my `northwind` site (I'll tell you which) and make it expire in a week."**
    → `update_site` with `password` and `expires_in_hours: 168`.
 7. **"How many visits did `northwind` get this month, and where did they come from?"**
    → `get_site_stats`.
@@ -87,8 +93,8 @@ Create a dedicated reviewer account so the directory team can exercise the flow:
 
 1. Sign up at https://app.cloud71.host (free plan, no card).
 2. Provide those credentials in the submission's "test account" field.
-3. Reviewer flow: add `https://mcp.cloud71.host` as a custom connector → sign in →
-   approve → run example prompt #1.
+3. Reviewer flow: add `https://mcp.cloud71.host/mcp` as a custom connector (or install
+   the plugin) → sign in → approve → run example prompt #1.
 4. On the free plan, the paid features (password, email capture, SEO, custom domains)
    return an upgrade message instead of acting. To let reviewers exercise prompts #5–#6,
    put the reviewer account on a paid plan.
@@ -104,8 +110,38 @@ Create a dedicated reviewer account so the directory team can exercise the flow:
 - [x] Tool names ≤ 64 chars, descriptive
 - [x] Privacy policy + terms + support contact published
 - [x] Server deployed at a stable HTTPS URL
+- [x] Unauthenticated `/mcp` answers HTTP `401` with `WWW-Authenticate: Bearer resource_metadata="…/.well-known/oauth-protected-resource/mcp"` (Claude only starts sign-in on a 401)
+- [x] Protected-resource `resource` is exactly `https://mcp.cloud71.host/mcp`
+- [x] Claude Code sign-in: DCR registers the loopback `localhost` / `127.0.0.1` callback the client asks for
 - [ ] Test account created and added to the submission (your step)
 - [ ] Submit the listing in the Claude / ChatGPT connector forms (your step)
+
+## Claude plugin bundle
+
+Portal path: **Submit new → Plugin bundle**. Repository `7t1-studio/cloud71-mcp`
+(public), plugin path `plugin`, tracked branch `main`. The repo root also carries a
+`.claude-plugin/marketplace.json`, so anyone can install it in Claude Code with
+`/plugin marketplace add 7t1-studio/cloud71-mcp` and `/plugin install cloud71@cloud71`.
+
+| Path | Purpose |
+| --- | --- |
+| `plugin/.claude-plugin/plugin.json` | Manifest + listing fields (`displayName`, `icon`, docs, support, privacy, terms) |
+| `plugin/.mcp.json` | The connector entry: `cloud71`, `type: http`, the same URL as the connector listing |
+| `plugin/skills/publish-website/SKILL.md` | The publishing workflow (naming sites, full-file redeploys, settings, domains, rollback, delete safety) |
+| `plugin/README.md` | What it does, example prompts, where data goes |
+| `plugin/LICENSE`, `plugin/assets/` | MIT license, 1024px icon |
+
+Checklist:
+
+- [x] `name` is `cloud71` (permanent, lowercase); `version` raised on every release
+- [x] `.mcp.json` URL equals the connector listing URL and holds no credentials
+- [x] Skill `name` equals its folder; description ≤ 1,024 characters; body < 500 lines
+- [x] README ≥ 40 words outside code, with ≥ 3 example prompts and a data-flow section
+- [x] No top-level `bin/`, no symlinks, no archives; every file < 256 KiB
+- [x] `claude plugin validate plugin` passes (Claude Code before 2.1.281 warns that the five listing fields are unknown; that's expected)
+- [ ] Tested in Claude Code (`/plugin install cloud71@cloud71`, then `/mcp` to sign in) and as an uploaded zip of `plugin/` in claude.ai (**Customize → Plugins → Add → Upload plugin**)
+- [ ] Portal **Validate** shows no **Blocking** findings
+- [ ] Pair the plugin with the connector listing after both are submitted
 
 ## Verify the live server
 

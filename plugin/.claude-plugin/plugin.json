@@ -1,0 +1,30 @@
+{
+  "name": "cloud71",
+  "displayName": "cloud71",
+  "version": "1.0.0",
+  "description": "Turn anything Claude makes into a live website. Publish pages, sites, reports, and PDFs to a shareable link, then update them, add a password or expiry, put them on your own domain, check visits, roll back, or get a QR code.",
+  "author": {
+    "name": "7t1 Studio / cloud71",
+    "email": "hello@cloud71.host",
+    "url": "https://cloud71.host"
+  },
+  "homepage": "https://cloud71.host/ai-agents/",
+  "repository": "https://github.com/7t1-studio/cloud71-mcp",
+  "license": "MIT",
+  "keywords": [
+    "hosting",
+    "publish",
+    "website",
+    "deploy",
+    "share",
+    "html",
+    "pdf",
+    "static-site",
+    "cloud71"
+  ],
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://cloud71.host/docs/mcp/",
+  "supportUrl": "https://cloud71.host/docs/mcp/",
+  "privacyPolicyUrl": "https://cloud71.host/privacy/",
+  "termsOfServiceUrl": "https://cloud71.host/terms/"
+}

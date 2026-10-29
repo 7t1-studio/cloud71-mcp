@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cloud71": {
+      "type": "http",
+      "url": "https://mcp.cloud71.host/mcp"
+    }
+  }
+}

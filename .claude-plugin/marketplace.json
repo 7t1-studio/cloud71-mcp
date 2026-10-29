@@ -1,0 +1,18 @@
+{
+  "name": "cloud71",
+  "owner": {
+    "name": "7t1 Studio / cloud71",
+    "email": "hello@cloud71.host"
+  },
+  "metadata": {
+    "description": "The cloud71 plugin for Claude: publish anything Claude makes to a live website."
+  },
+  "plugins": [
+    {
+      "name": "cloud71",
+      "source": "./plugin",
+      "description": "Turn anything Claude makes into a live website, then update, protect, measure, and roll it back from the chat.",
+      "category": "productivity"
+    }
+  ]
+}

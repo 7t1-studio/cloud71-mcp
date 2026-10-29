@@ -36,9 +36,27 @@ Every tool acts **only on the signed‑in user's own cloud71 account**, enforced
 ## Add the connector
 
 **Claude** → Settings → Connectors → *Add custom connector* → paste
-`https://mcp.cloud71.host` → *Connect* → sign in to cloud71 and approve.
+`https://mcp.cloud71.host/mcp` → *Connect* → sign in to cloud71 and approve.
 
-**ChatGPT** → Settings → Connectors → *Add* → `https://mcp.cloud71.host` → sign in.
+**ChatGPT** → Settings → Connectors → *Add* → `https://mcp.cloud71.host/mcp` → sign in.
+
+**Claude Code** → `claude mcp add --transport http cloud71 https://mcp.cloud71.host/mcp`,
+then `/mcp` to sign in. Or install the plugin below.
+
+## Claude plugin
+
+[`plugin/`](plugin/) is the cloud71 plugin for Claude: the connector entry plus a
+`publish-website` skill that teaches Claude the publishing workflow (naming sites,
+full-file redeploys, settings, custom domains, rollback, safe deletes). This repo is
+also a plugin marketplace, so in Claude Code:
+
+```text
+/plugin marketplace add 7t1-studio/cloud71-mcp
+/plugin install cloud71@cloud71
+```
+
+Then run `/mcp` and sign in to cloud71. Directory submission notes are in
+[docs/SUBMISSION.md](docs/SUBMISSION.md).
 
 ## How it works
 
