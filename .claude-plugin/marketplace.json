@@ -11,7 +11,7 @@
     {
       "name": "cloud71",
       "source": "./plugin",
-      "description": "Turn anything Claude makes into a live website, then update, protect, measure, and roll it back from the chat.",
+      "description": "Deploy anything Claude makes to the web and get a shareable link, then update, protect, measure, and roll it back from the chat.",
       "category": "productivity"
     }
   ]

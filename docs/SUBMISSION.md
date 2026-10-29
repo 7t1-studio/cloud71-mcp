@@ -30,7 +30,11 @@ The server is **live** at `https://mcp.cloud71.host/mcp` (Streamable HTTP, OAuth
 
 ### Short description (≤ ~100 chars)
 
-> Publish HTML pages, PDFs, images, or whole folders to a live cloud71.site URL — straight from chat.
+> Deploy anything to the web from chat: pages, sites, reports, and PDFs get a live, shareable link in seconds.
+
+Directory search and Claude's suggestions match on this text, the description, and the
+keywords, so they lead with the words people use when they want something online:
+deploy, host, publish, share a link, put it online.
 
 ### Long description
 

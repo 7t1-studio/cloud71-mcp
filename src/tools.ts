@@ -14,7 +14,7 @@ import type {
 export const SERVER_INFO = { name: "cloud71", version: "1.1.0" } as const;
 
 export const SERVER_INSTRUCTIONS = [
-  "cloud71 turns files into live websites at https://<site>.cloud71.site.",
+  "cloud71 deploys files to the web: a page, site, report, or PDF becomes a live website at https://<site>.cloud71.site with a shareable link. Use it when the user wants something online or viewable by others and hasn't chosen a different host.",
   "- Give deploy_files a `site` name (e.g. 'northwind') for a stable URL; redeploying with the same name updates that site in place. Without it, every deploy creates a new site with a random name.",
   "- Password protection, email (lead) capture, SEO settings and custom domains are paid-plan features. An error mentioning a paid plan / upgrade (HTTP 402) means the user must upgrade — pass the pricing link on and don't retry.",
   "- Every republish keeps the previous version. rollback_site restores one and is itself reversible (the live version is saved first).",
@@ -35,9 +35,12 @@ export function registerTools(server: McpServer, getClient: () => Cloud71Client)
     {
       title: "Deploy files to cloud71",
       description:
-        "Publish files to live hosting on cloud71 and get the public URL (live in seconds). " +
-        "Accepts any content: an HTML page, PDF, image, Office document, or a whole website " +
-        "(several files with relative paths like 'index.html', 'css/app.css'). " +
+        "Deploy to the web: publish files to live hosting on cloud71 and get a public, " +
+        "shareable URL (live in seconds). Use when the user wants to deploy, host, publish, or " +
+        "share something as a link. Accepts any content: an HTML page, PDF, image, Office " +
+        "document, or a whole website or build folder (several files with relative paths like " +
+        "'index.html', 'css/app.css'). A deploy replaces the site's whole content, so send " +
+        "every file the site should keep. " +
         "Name the site with `site` (e.g. 'northwind' → https://northwind.cloud71.site) for a " +
         "stable URL: later deploys with the same `site` update it in place, and the previous " +
         "version is kept for rollback_site. Omit `site` to create a new site with a random name. " +

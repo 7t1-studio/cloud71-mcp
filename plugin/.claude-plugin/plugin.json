@@ -1,8 +1,8 @@
 {
   "name": "cloud71",
   "displayName": "cloud71",
-  "version": "1.0.0",
-  "description": "Turn anything Claude makes into a live website. Publish pages, sites, reports, and PDFs to a shareable link, then update them, add a password or expiry, put them on your own domain, check visits, roll back, or get a QR code.",
+  "version": "1.0.1",
+  "description": "Deploy anything Claude makes to the web in seconds. Publish pages, sites, prototypes, reports, and PDFs to a shareable link, then update them, add a password or expiry, put them on your own domain, check visits, roll back, or get a QR code.",
   "author": {
     "name": "7t1 Studio / cloud71",
     "email": "hello@cloud71.host",
@@ -12,14 +12,18 @@
   "repository": "https://github.com/7t1-studio/cloud71-mcp",
   "license": "MIT",
   "keywords": [
-    "hosting",
+    "deploy",
+    "web-hosting",
     "publish",
     "website",
-    "deploy",
-    "share",
+    "share-link",
+    "landing-page",
+    "static-site",
     "html",
     "pdf",
-    "static-site",
+    "portfolio",
+    "prototype",
+    "custom-domain",
     "cloud71"
   ],
   "icon": "./assets/icon.png",

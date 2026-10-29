@@ -50,7 +50,7 @@ app.get("/authorize", async (c) => {
     client: { clientId: oauthReqInfo.clientId, clientName: client?.clientName },
     server: {
       name: "cloud71",
-      description: "Deploy AI-generated files to live hosting on cloud71.",
+      description: "Deploy anything your AI makes to the web and get a shareable link.",
     },
     state: oauthReqInfo as unknown as Record<string, unknown>,
   });

@@ -105,9 +105,9 @@ ${desc ? `<p>${desc}</p>` : ""}
 <div class="scopes"><b>${clientName}</b> is requesting access to your cloud71 account. After you
 approve, you'll sign in to cloud71.
 <ul>
-<li>Deploy files to your hosting</li>
-<li>List and read your sites</li>
-<li>Manage your sites — rename, custom domain, delete</li>
+<li>Publish and update your sites</li>
+<li>List your sites and read their files, visits, and versions</li>
+<li>Change site settings — password, email form, expiry, SEO, custom domain, rollback, delete</li>
 </ul>
 </div>
 <form method="post">
