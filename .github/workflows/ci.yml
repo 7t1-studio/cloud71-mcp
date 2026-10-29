@@ -18,6 +18,7 @@ jobs:
       - run: pnpm cf-typegen
       - run: pnpm lint
       - run: pnpm typecheck
+      - run: pnpm test
 
   deploy:
     needs: verify

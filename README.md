@@ -17,10 +17,19 @@ no tokens to paste.
 
 | Tool | What it does |
 | --- | --- |
-| `deploy_files` | Publish one or more files (any type — HTML/CSS/JS, PDF, images, Office docs, a whole folder) to a new or existing cloud71 site; returns the live URL. |
-| `list_sites` | List your cloud71 sites (name, URL, status). |
+| `deploy_files` | Publish one or more files (any type — HTML/CSS/JS, PDF, images, Office docs, a whole folder) and return the live URL. Name the `site` for a stable URL that later deploys update; optional title, password, email capture, and auto‑expiry. |
+| `list_sites` | List your sites: live URL, title, custom domain + SSL state, password / email‑capture flags, expiry, visits this month. |
 | `read_site` | Read a site's files and status, so the model can edit‑then‑redeploy. |
-| `manage_site` | Rename a site, attach a custom domain, or delete it (guarded — destructive actions are clearly annotated). |
+| `update_site` | Change a site's settings without redeploying: title, password (or remove it), email capture, expiry, SEO title/description. |
+| `manage_domain` | Attach, check, or remove a custom domain; returns the DNS records to add (CNAME + any TXT validation) and whether SSL is live yet. |
+| `get_site_stats` | Visits and unique visitors this month vs. the plan limit, recent months, top referrers, captured leads. |
+| `list_versions` | List a site's saved versions (number, date, files, size). |
+| `rollback_site` | Restore an earlier version; the live version is saved first, so it can be undone. |
+| `get_qr_code` | QR code for a site's live URL, as a GIF image plus embeddable SVG markup. |
+| `delete_site` | Permanently delete a site (stops serving immediately; annotated destructive). |
+
+Password protection, email capture, SEO settings, and custom domains are paid‑plan
+features; when the plan doesn't include one, the tool says so and links to the pricing page.
 
 Every tool acts **only on the signed‑in user's own cloud71 account**, enforced server‑side.
 
@@ -57,8 +66,12 @@ pnpm install
 cp .dev.vars.example .dev.vars   # fill in the cloud71 OAuth client id/secret
 pnpm dev                         # wrangler dev (local, on http://localhost:8788)
 pnpm typecheck
-pnpm test
+pnpm lint
+pnpm test                        # vitest: drives every tool through an in-memory MCP client
 ```
+
+Tools are registered in `src/tools.ts` (`registerTools(server, getClient)`); the cloud71 API
+client is `src/cloud71.ts`. Tests in `test/` stub `fetch` and assert the exact API requests.
 
 Connect a local MCP client (e.g. the [MCP Inspector](https://github.com/modelcontextprotocol/inspector))
 to `http://localhost:8788/mcp` to exercise the tools.

@@ -33,17 +33,31 @@ The server is **live** at `https://mcp.cloud71.host` (Streamable HTTP, OAuth 2.1
 > and it publishes to a public `https://*.cloud71.site` URL in seconds — with free
 > SSL, analytics, and optional custom domains. You sign in with your own cloud71
 > account over OAuth (no API keys to paste), and every action runs only against
-> your account. List your sites, read a site's files to edit‑then‑redeploy, attach
-> a custom domain, or take a site down — all from the conversation.
+> your account. List your sites, read a site's files to edit‑then‑redeploy, password‑
+> protect a page or put an email gate in front of it, attach a custom domain, check
+> traffic, roll back to an earlier version, get a QR code, or take a site down — all
+> from the conversation.
 
 ## Tools (with safety annotations)
 
-| Tool | Title | readOnly | destructive | Purpose |
-| --- | --- | --- | --- | --- |
-| `deploy_files` | Deploy files to cloud71 | no | no | Publish one or more files (any type) to a new/existing site; returns the live URL. |
-| `list_sites` | List my cloud71 sites | yes | no | List the user's sites (name, URL, status). |
-| `read_site` | Read a cloud71 site | yes | no | List a site's files, or return one file's text. |
-| `manage_site` | Manage a cloud71 site | no | yes | Rename, attach a custom domain, or delete a site. |
+All tools also set `openWorldHint: true` (they call the cloud71 API).
+
+| Tool | Title | readOnly | destructive | idempotent | Purpose |
+| --- | --- | --- | --- | --- | --- |
+| `deploy_files` | Deploy files to cloud71 | no | no | no | Publish one or more files (any type) to a new or named site and return the live URL; optional title, password, email capture, auto‑expiry. |
+| `list_sites` | List my cloud71 sites | yes | no | yes | List the user's sites: live URL, title, custom domain + SSL, password / email‑capture flags, expiry, visits this month. |
+| `read_site` | Read a cloud71 site | yes | no | yes | List a site's files, or return one file's text. |
+| `update_site` | Update a cloud71 site's settings | no | no | yes | Change title, password (or remove it), email capture, expiry, SEO title/description. |
+| `manage_domain` | Manage a site's custom domain | no | yes | no | Add a custom domain (returns DNS records), check its SSL/live status, or remove it. |
+| `get_site_stats` | Get a cloud71 site's stats | yes | no | yes | Visits vs. plan limit, recent months, top referrers, captured leads. |
+| `list_versions` | List a cloud71 site's versions | yes | no | yes | List saved versions (number, date, files, size). |
+| `rollback_site` | Roll back a cloud71 site | no | no | no | Restore an earlier version; the live version is saved first, so it's reversible. |
+| `get_qr_code` | Get a QR code for a cloud71 site | yes | no | yes | QR code for the site's live URL as a GIF image plus SVG markup. |
+| `delete_site` | Delete a cloud71 site (permanent) | no | yes | yes | Permanently delete a site; it stops serving immediately. |
+
+The server also sends MCP `instructions`: name sites for stable URLs; password, email
+capture, SEO and custom domains are paid‑plan features (a 402 means upgrade, with a
+pricing link); rollbacks are reversible; deletes are not.
 
 ## Example prompts (≥ 3 required)
 
@@ -56,7 +70,16 @@ The server is **live** at `https://mcp.cloud71.host` (Streamable HTTP, OAuth 2.1
 4. **"Read the index.html of my `northwind` site, change the headline to 'Now Open', and redeploy it."**
    → `read_site` → edit → `deploy_files` with `site: "northwind"`.
 5. **"Attach the domain www.northwind.coffee to my `northwind` site."**
-   → `manage_site` with `action: "set_domain"` (returns the DNS records to add).
+   → `manage_domain` with `action: "add"` (returns the CNAME + TXT records to add);
+   later `action: "status"` reports when SSL is live.
+6. **"Password‑protect my `northwind` site with 'beans2026' and make it expire in a week."**
+   → `update_site` with `password` and `expires_in_hours: 168`.
+7. **"How many visits did `northwind` get this month, and where did they come from?"**
+   → `get_site_stats`.
+8. **"That last deploy broke the page — put `northwind` back to the previous version."**
+   → `list_versions` → `rollback_site`.
+9. **"Give me a QR code for my `northwind` site for the flyer."**
+   → `get_qr_code` (GIF image + SVG markup).
 
 ## Test account (required by both directories)
 
@@ -66,6 +89,9 @@ Create a dedicated reviewer account so the directory team can exercise the flow:
 2. Provide those credentials in the submission's "test account" field.
 3. Reviewer flow: add `https://mcp.cloud71.host` as a custom connector → sign in →
    approve → run example prompt #1.
+4. On the free plan, the paid features (password, email capture, SEO, custom domains)
+   return an upgrade message instead of acting. To let reviewers exercise prompts #5–#6,
+   put the reviewer account on a paid plan.
 
 ## Acceptance checklist (Anthropic)
 
@@ -74,7 +100,7 @@ Create a dedicated reviewer account so the directory team can exercise the flow:
 - [x] `.well-known/oauth-protected-resource` (RFC 9728)
 - [x] OAuth 2.1, PKCE **S256**, implicit flow disabled, plain PKCE disabled
 - [x] Dynamic Client Registration (RFC 7591) at `/register`
-- [x] Every tool has `title`, `readOnlyHint`, `destructiveHint` annotations
+- [x] Every tool has `title`, `readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint` annotations
 - [x] Tool names ≤ 64 chars, descriptive
 - [x] Privacy policy + terms + support contact published
 - [x] Server deployed at a stable HTTPS URL

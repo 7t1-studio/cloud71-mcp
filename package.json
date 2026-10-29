@@ -1,6 +1,6 @@
 {
   "name": "cloud71-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "cloud71 MCP connector — deploy AI-generated files to cloud71 hosting from Claude & ChatGPT",
@@ -9,6 +9,7 @@
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
+    "test": "vitest run",
     "format": "biome check --write .",
     "cf-typegen": "wrangler types"
   },
@@ -18,12 +19,14 @@
     "agents": "^0.16.0",
     "fflate": "^0.8.2",
     "hono": "^4.7.0",
+    "qrcode-generator": "^2.0.4",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@cloudflare/workers-types": "^4.20260530.1",
     "typescript": "^5.9.3",
+    "vitest": "^5.0.5",
     "wrangler": "^4.20.0"
   }
 }
